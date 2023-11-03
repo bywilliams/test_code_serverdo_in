@@ -1,16 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <title><?=$this->e($title)?></title>
-</head>
-<body>
-    <div id="container">
-        <?=$this->section('content')?>
+<?= $this->insert('_components/_topo', ['title' => $title]); ?>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand d-md-none" href="#">
+            <img src="https://codingyaar.com/wp-content/uploads/logo-1.png" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Início</a>
+                </li>
+                <a class="navbar-brand d-none d-md-block" href="#">
+                    <img src="https://codingyaar.com/wp-content/uploads/logo-1.png" alt="">
+                </a>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Perfil</a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</nav>
+
+<!-- Contéudo principal -->
+<main class="container mt-3">
+    <?= $this->section('conteudo') ?>
+</main>
+
+<?= $this->insert('_components/_footer'); ?>

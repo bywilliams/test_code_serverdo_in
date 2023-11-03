@@ -12,4 +12,10 @@ class HomeController
         view('home', ['name' => 'William', 'title' => 'Site com Slim e plates engine']);
         return $response;
     }
+
+    // public function dashboard(Request $request, Response $response)
+    // {
+    //     view('dashboard', ['title' => 'Bem vindo a dashboard']);
+    //     return $response;
+    // }
 }
