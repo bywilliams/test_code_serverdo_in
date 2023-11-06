@@ -93,8 +93,8 @@ a:hover {
 }
 
 p {
-    text-align: center;
-    margin: 8px;
+    /* text-align: center; */
+    /* margin: 8px; */
 }
 
 
@@ -102,7 +102,27 @@ p {
 
 
 
-/* Mediaqueries */
+/* Media queries */
+
+
+/* STATUS MESSAGE */
+.status-message {
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.success {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.error {
+    background-color: #FF5733;
+    color: #fff;
+}
 
 
 @media screen and (min-width: 768px) {

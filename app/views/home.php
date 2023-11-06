@@ -2,6 +2,9 @@
 
 <div class="container-fluid d-flex align-items-center justify-content-center" id="container-form">
     <div class="form-container" id="login-form">
+        <?php  if ($status !== '') : ?>
+            <div class="d-block status-message <?= $status ?>"><?= $status_message ?></div>
+        <?php endif ?>
         <div class="text-center">
             <i class="fas fa-people-arrows fa-5x mb-3"></i>
         </div>
