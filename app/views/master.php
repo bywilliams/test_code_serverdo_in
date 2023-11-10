@@ -3,7 +3,7 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand d-md-none" href="#">
-            <img src="https://codingyaar.com/wp-content/uploads/logo-1.png" alt="">
+            <img src="/assets/imgs/logo2.png" alt="">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -14,7 +14,7 @@
                     <a class="nav-link active" aria-current="page" href="#">Início</a>
                 </li>
                 <a class="navbar-brand d-none d-md-block" href="#">
-                    <img src="https://codingyaar.com/wp-content/uploads/logo-1.png" alt="">
+                    <img src="/assets/imgs/logo2.png" alt="">
                 </a>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Perfil</a>

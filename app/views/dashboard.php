@@ -2,19 +2,17 @@
 
 <?php $this->start('conteudo') ?>
 <div class="container mt-5">
-    <h1>Feed de William</h1>
+
     <div class="row justify-content-md-center">
         <div class="col-md-8">
             <?php if ($status !== '') : ?>
                 <div class="d-block status-message <?= $status ?>"><?= $status_message ?></div>
             <?php endif ?>
             
-            <div id="post-feed"></div>
-            
             <!-- Form para Inserir Posts -->
             <div class="card border border-0 mb-4">
                 <div class="card-header  bg-dark text-center text-white">
-                    <h4>Criar publicação</h4>
+                    <h4>Criar post</h4>
                 </div>
                 <div class="card-body">
                     <form method="POST" enctype="multipart/form-data" id="post-form">
@@ -29,17 +27,25 @@
                         </div>
                         <div class="mb-3">
                             <label for="postFile" class="form-label">Imagem</label>
-                            <input class="form-control" name="postFile" type="file">
+                            <input class="form-control" name="postFile" id="postFile" type="file">
                         </div>
-                        <button type="submit" class="btn btn-outline-primary">Publicar</button>
+                        <button type="submit" class="btn btn-secondary" id="btnSubmit">Publicar</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="row justify-content-md-center">
+        <div class="col-md-8 mb-5">
+            <div id="post-feed">
+            </div>
+        </div>
+    </div>
+
     <!-- POSTS -->
     <div class="row justify-content-md-center">
+        <h1>Feed de William</h1>
         <div class="col-md-8  mb-5">
             <?php foreach ($posts as $post) : ?>
                 <div class="card border border-0 mb-3">
@@ -52,7 +58,9 @@
                         <h5 class="card-title"><?= $this->e($post->title) ?></h5>
                         <p class="card-text"><?= $this->e($post->description) ?></p>
                     </div>
-                    <img src="https://via.placeholder.com/1000x400" class="card-img-top" alt="Imagem do Post 1">
+                    <?php if ($this->e($post->image)): ?>
+                        <img src="assets/imgs/posts/<?= $this->e($post->image) ?>" class="card-img-top" alt="Imagem do Post 1">
+                    <?php endif ?>
                     <div class="card-footer" id="card-footer_<?= $post->id ?>" style="display: none;">
                         <button class="btn btn-primary" id="show-comments-button_<?= $post->id ?>"><i class="fas fa-comments"></i> Comentários</button>
                         <button class="btn btn-warning"><i class="fas fa-edit"></i> Editar</button>
@@ -79,31 +87,6 @@
 <?php $this->end() ?>
 
 <script>
-$(document).ready(function() {
-    $('#post-form').on('submit', function(e) {
-        // Previne o comportamento padrão do formulário
-        e.preventDefault(); 
-
-        // Cria um novo objeto FormData
-        var formData = new FormData(this); 
-
-        $.ajax({
-            // URL do endpoint que irá processar a requisição
-            url: '/post-store', 
-            method: 'POST', 
-            data: formData, 
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                // Adiciona o novo post no topo do feed
-                $('#post-feed').prepend(response.post);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error(textStatus, errorThrown);
-            }
-        });
-    });
-});
-
+    
 
 </script>

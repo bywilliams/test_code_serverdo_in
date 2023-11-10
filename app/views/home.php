@@ -16,7 +16,7 @@
                 <input type="password" id="password" name="password" required>
                 <button type="submit">Login</button>
             </form>
-            <p>Cadastrar-se gratis? <a href="#" id="signup-link">Cadastrar</a></p>
+            <p>Registre-se gratis? <a href="#" id="signup-link">Registrar</a></p>
         </div>
 
         <div class="form-container" id="signup-form" style="display: none;">
@@ -31,18 +31,19 @@
                 <input type="password" id="new-password" name="new-password" required placeholder="sua melhor senha">
                 <button type="submit">Cadastrar</button>
             </form>
-            <p>Já possuo uma conta? <a href="#" id="login-link">Login</a></p>
+            <p>Já possui uma conta? <a href="#" id="login-link">Login</a></p>
         </div>
     </div>
 
 <?php echo $this->insert('_components/_footer'); ?>
 
 <script>
-    const loginForm = document.getElementById('login-form');
-    const signupForm = document.getElementById('signup-form');
+    const loginForm = document.getElementById('login-form'); // id do form de login
+    const signupForm = document.getElementById('signup-form'); // id do form de registro
     const loginLink = document.getElementById('login-link');
     const signupLink = document.getElementById('signup-link');
 
+    // Ao clicar no link de login apresenta o form de login
     loginLink.addEventListener('click', (event) => {
         event.preventDefault();
         signupForm.style.display = 'none';
@@ -54,6 +55,7 @@
         }, 10);
     });
 
+    // Ao clicar no link de registra-se apresenta o form de registro
     signupLink.addEventListener('click', (event) => {
         event.preventDefault();
         loginForm.style.display = 'none';

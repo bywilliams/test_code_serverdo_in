@@ -2,7 +2,7 @@
 namespace app\controllers;
 session_start();
 use app\models\PostModel;
-
+use app\traits\PostTrait;
 use Slim\Http\Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -13,6 +13,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  */
 class PostController
 {
+    use PostTrait;
+
     private $model;
     protected $router;
 
@@ -37,13 +39,10 @@ class PostController
      */
     public function index(Request $request, Response $response)
     {
-        // Gera um novo token CSRF
-        $newCsrfToken = bin2hex(random_bytes(32)); // 64 caracteres aleatórios
+        // Gera CSRF Token
+        $this->generateCsrfToken();
 
-        // Armazena o token na sessão
-        $_SESSION['csrf_token'] = $newCsrfToken;
-
-        // variáveis para apresentação de erros de validação
+        // apresentação de erros de validação
         $status = $_SESSION['status'] ?? '';
         $status_message = $_SESSION['status_message'] ?? '';
         unset($_SESSION['status']);
@@ -66,52 +65,41 @@ class PostController
      */
     public function store(Request $request, Response $response)
     {
+        // Pega o corpo da requisição com Slim
+        $data = $request->getParsedBody();
+        
         // verifica se o form possui CSRF Token e se não está vazio
-        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] != $_SESSION['csrf_token']) {
+        if (!$this->validateCsrfToken($data)) {
             $_SESSION['status'] = 'error';
             $_SESSION['status_message'] = 'Ação inválida';
             return $response->withRedirect('/');
         }
         
-        // Pega o corpo da requisição com Slim
-        $data = $request->getParsedBody();
-        
-        // verifica se titulo e conteúdo foram preenchidos
-        if (empty($data['postTitle']) && empty($data['postContent'])) {
-            $_SESSION['status'] = 'error';
-            $_SESSION['status_message'] = 'Preencha o titulo e conteúdo do post!';
-            return $response->withRedirect('/dashboard');
-        }
-        
         // sanitiza os inputs titulo e conteúdo
-        foreach ($data as $key => $value) {
-            $data[$key] = htmlspecialchars($value, ENT_QUOTES);
-        }
-
+        $data = $this->sanitizeData($data);
+        
+        // Verifica se algum arquivo foi enviado, salva na pasta e retorna o nome para a variável
+        $filename = $this->handleFileUpload($request, $response);
+        
+        // Adiciona o nome da imagem ao objeto de dados
+        $data['postFile'] = $filename ??  null; 
+        
+        // converte em um Json
         $json = json_encode($data);
 
+        // decodifica o Json para usar como objeto
         $formDataObjt = json_decode($json);
 
-        $postInsert = $this->model->create($formDataObjt);
+        // Insere o post no BD
+        $this->model->create($formDataObjt);
 
-        // Verifica se algum arquivo foi enviado na requisição
-        $postFile = $request->getUploadedFiles()['postFile'];
-        if ($postFile->getError() == UPLOAD_ERR_OK) {
-            
-            // Verifica tipo de arquivo
-            $extension = pathinfo($postFile->getClientFilename(), PATHINFO_EXTENSION);
-            $allowedExtension = ['jpg', 'jpeg', 'png'];
-
-            // verifica se a extensão não faz parte das permitidas
-            if (!in_array($extension, $allowedExtension)) {
-                $_SESSION['status'] = 'error';
-                $_SESSION['status_message'] = 'Tipo de imagem não permitida!';
-                return $response->withRedirect('/dashboard');
-            }
-
-            echo "imagem ok"; exit;
-        }
+        // traz o registro do post inserido
+        $lastPost = $this->model->lastInsertId('1');
         
-        return $response;
+        // Gera o html do post
+        $postHtml = $this->generatePostHtml($lastPost);
+
+        // retorna como um JSON para a rquisição Ajax
+        return $response->withJson(['post' => $postHtml]);
     }
 }
