@@ -6,17 +6,35 @@ use app\models\PostModel;
 use Slim\Http\Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-
+/**
+ * Classe PostController
+ * 
+ * Esta classe é responsável por gerenciar as operações relacionadas aos posts.
+ */
 class PostController
 {
     private $model;
     protected $router;
 
+    /**
+     * Constructor da classe PostController
+     * 
+     * Inicializa a classe PostController e cria uma nova instância do modelo PostModel
+     */
     public function __construct()
     {
         $this->model = new PostModel();
     }
 
+    /**
+     * Método index
+     * 
+     * Este método gera um novo token CSRF, recupera todos os posts e apresenta a página de dashboard
+     * 
+     * @param Request $request A requisição HTTP
+     * @param Response $response A resposta HTTP
+     * @return Response A resposta HTTP
+     */
     public function index(Request $request, Response $response)
     {
         // Gera um novo token CSRF
@@ -37,26 +55,46 @@ class PostController
         return $response;
     }
 
+    /**
+     * Método store
+     * 
+     * Este método verifica o token CSRF, sanitiza os dados postados e verifica se um arquivo foi enviado
+     * 
+     * @param Request $request A requisição HTTP
+     * @param Response $response A resposta HTTP
+     * @return Response A resposta HTTP
+     */
     public function store(Request $request, Response $response)
     {
+        // verifica se o form possui CSRF Token e se não está vazio
         if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] != $_SESSION['csrf_token']) {
             $_SESSION['status'] = 'error';
             $_SESSION['status_message'] = 'Ação inválida';
             return $response->withRedirect('/');
         }
         
-        // sanitiza os inputs postTitle e postContent
+        // Pega o corpo da requisição com Slim
         $data = $request->getParsedBody();
-        foreach ($data as $key => $value) {
-            $data[$key] = htmlspecialchars($value, ENT_QUOTES);
-        }
-
-        if (!$data['postTitle'] && !$data['postContent']) {
+        
+        // verifica se titulo e conteúdo foram preenchidos
+        if (empty($data['postTitle']) && empty($data['postContent'])) {
             $_SESSION['status'] = 'error';
             $_SESSION['status_message'] = 'Preencha o titulo e conteúdo do post!';
             return $response->withRedirect('/dashboard');
         }
+        
+        // sanitiza os inputs titulo e conteúdo
+        foreach ($data as $key => $value) {
+            $data[$key] = htmlspecialchars($value, ENT_QUOTES);
+        }
 
+        $json = json_encode($data);
+
+        $formDataObjt = json_decode($json);
+
+        $postInsert = $this->model->create($formDataObjt);
+
+        // Verifica se algum arquivo foi enviado na requisição
         $postFile = $request->getUploadedFiles()['postFile'];
         if ($postFile->getError() == UPLOAD_ERR_OK) {
             
@@ -72,9 +110,7 @@ class PostController
             }
 
             echo "imagem ok"; exit;
-            
         }
-        
         
         return $response;
     }
