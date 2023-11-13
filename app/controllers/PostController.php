@@ -16,7 +16,6 @@ class PostController
     use PostTrait;
 
     private $model;
-    protected $router;
 
     /**
      * Constructor da classe PostController
@@ -57,7 +56,7 @@ class PostController
     /**
      * Método store
      * 
-     * Este método verifica o token CSRF, sanitiza os dados postados e verifica se um arquivo foi enviado
+     * Este método verifica o token CSRF, sanitiza os dados postados, verifica se um arquivo foi enviado e faz o insert
      * 
      * @param Request $request A requisição HTTP
      * @param Response $response A resposta HTTP
@@ -70,9 +69,7 @@ class PostController
         
         // verifica se o form possui CSRF Token e se não está vazio
         if (!$this->validateCsrfToken($data)) {
-            $_SESSION['status'] = 'error';
-            $_SESSION['status_message'] = 'Ação inválida';
-            return $response->withRedirect('/');
+            return $response->withJson(['post' => 'csrf_failure']);
         }
         
         // sanitiza os inputs titulo e conteúdo
@@ -82,7 +79,7 @@ class PostController
         $filename = $this->handleFileUpload($request, $response);
         
         // Adiciona o nome da imagem ao objeto de dados
-        $data['postFile'] = $filename ??  null; 
+        $filename ? $data['postFile'] = $filename : null;  
         
         // converte em um Json
         $json = json_encode($data);
@@ -101,5 +98,64 @@ class PostController
 
         // retorna como um JSON para a rquisição Ajax
         return $response->withJson(['post' => $postHtml]);
+    }
+
+    /**
+     * Método update
+     * 
+     * Este método verifica o CSRF token, sanitiza os dados, checa se um arquivo foi anexado e realiza o update do post
+     * 
+     * @param Request $request A  requisição HTTP
+     * @param Response $response A resposta HTTP
+     * @param $args O id do post a se atualizar
+     * @return Response A resposta HTTP
+     */
+    public function update(Request $request, Response $response, $args)
+    {
+        // Pega o corpo da requisição com Slim
+        $data = $request->getParsedBody();
+        
+        // verifica se o form possui CSRF Token e se não está vazio
+        if (!$this->validateCsrfToken($data)) {
+            return $response->withJson(['post' => 'csrf_failure']);
+        }
+        // sanitiza os inputs titulo e conteúdo
+        $data = $this->sanitizeData($data);
+        
+        // Verifica se algum arquivo foi enviado, salva na pasta e retorna o nome para a variável
+        $filename = $this->handleFileUpload($request, $response);
+        
+        // Adiciona o nome da imagem ao objeto de dados
+        $filename ? $data['postFile'] = $filename : null; 
+        
+        // converte em um Json
+        $json = json_encode($data);
+
+        // decodifica o Json para usar como objeto
+        $formDataObjt = json_decode($json);
+
+        $id = $args['id'];
+        $this->model->update($formDataObjt, $id);
+        
+        return $response;
+    }
+
+    public function delete(Request $request, Response $response, $args)
+    {
+        
+        // Pega o corpo da requisição com Slim
+        $data = $request->getParsedBody();
+
+        // verifica se o form possui CSRF Token e se não está vazio
+        if (!$this->validateCsrfToken($data)) {
+            return $response->withJson(['post' => 'csrf_failure']);
+        }
+
+        $id = $args['id'];
+
+        $this->model->delete($id);
+
+        return $response->withRedirect('/dashboard');
+
     }
 }

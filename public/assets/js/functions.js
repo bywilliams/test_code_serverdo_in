@@ -1,3 +1,3 @@
-
-import  * as module1 from '/assets/js/modules/card_js.js';
-import * as module2 from '/assets/js/modules/postForm.js';
+import * as postActions from '/assets/js/modules/post_actions_div.js';
+import * as postInsertAjax from '/assets/js/modules/post_insert_ajax.js';
+import * as postEditAjax from '/assets/js/modules/post_edit_ajax.js';

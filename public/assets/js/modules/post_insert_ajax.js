@@ -28,6 +28,11 @@ $(document).ready(function() {
     // Requisição ajax do formulário de post
     $('#post-form').on('submit', function(e) {
 
+        var messages = {
+            'success': 'Post inserido com sucesso!',
+            'csrf_failure': 'Ação inválida!'
+        }
+
         // Previne o comportamento padrão do formulário
         e.preventDefault();
 
@@ -44,13 +49,21 @@ $(document).ready(function() {
 
                 var postHtml = response.post;
 
-                // Adiciona o novo post no topo do feed
-                $('#post-feed').prepend(postHtml);
+                if (postHtml != 'csrf_failure') {
 
-                $('#postTitle').val('');
-                $('#postContent').val('');
+                    // Adiciona o novo post no topo do feed
+                    $('#post-feed').prepend(postHtml);
 
-                Swal.fire("Post inserido com sucesso!");
+                    $('#postTitle').val('');
+                    $('#postContent').val('');
+                    $('#postFile').val('');
+
+                    Swal.fire(messages['success']);
+
+                } else {
+                    Swal.fire(messages['csrf_failure']);
+                }
+                
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error(textStatus, errorThrown);
@@ -59,5 +72,3 @@ $(document).ready(function() {
     });
     // Fim requisição ajax do formulário de post
 });
-
-// console.log('postForm.js caregado');

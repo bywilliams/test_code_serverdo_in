@@ -57,9 +57,10 @@ trait PostTrait
     {
         // Verifica se algum arquivo foi enviado na requisição
         $postFile = $request->getUploadedFiles()['postFile'];
-
-        if ($postFile->getError() == UPLOAD_ERR_OK) {
-
+        $filename = '';
+        
+        if ($postFile != null && $postFile->getError() == UPLOAD_ERR_OK) {
+            
             // Verifica tipo de arquivo (extensão)
             $extension = pathinfo($postFile->getClientFilename(), PATHINFO_EXTENSION);
             $allowedExtension = ['jpg', 'jpeg', 'png'];
@@ -72,7 +73,7 @@ trait PostTrait
             }
             // gera um nome único como base
             $basename = bin2hex(random_bytes(8));
-            // Define path diretório
+            // Define o path diretório
             $path = dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'public/assets/imgs/posts/';
 
             $filename = sprintf('%s.%0.8s', $basename, $extension);

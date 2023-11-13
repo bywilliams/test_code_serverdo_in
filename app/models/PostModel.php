@@ -39,6 +39,7 @@
             INNER JOIN users AS usr ON pts.user_id = usr.id
             ORDER BY pts.id DESC
             ");
+
             try {
                 $resultPosts = $sqlPost->fetchAll(PDO::FETCH_OBJ);
             } catch (PDOException $e) {
@@ -82,6 +83,14 @@
 
         }
 
+        /**
+         * Método lastInsertId
+         * 
+         * Este método traz o último post inserido na requisição ajax 
+         * 
+         * @param $user_id O id de identificação do usuário
+         * @return array $data 
+         */
         function lastInsertId ($user_id) 
         {
             $sqlLastInsert = "SELECT pts.id, pts.title, pts.description, pts.image, CONCAT( usr.name, ' ',  usr.lastname) AS user_name 
@@ -95,6 +104,60 @@
             $data = $stmt->fetch();
 
             return $data;
+        }
+
+        function update($formData, $postId) 
+        {
+            // verifca se uma nova imagem foi enviada
+            $newImageUploaded = isset($formData->postFile) && !empty($formData->postFile);
+
+            if (!$newImageUploaded) {
+                $sqlSelect = "SELECT image FROM $this->table WHERE id = :id";
+                $stmt = $this->connection->prepare($sqlSelect);
+                $stmt->execute(['id' => $postId]);
+                $formData->postFile = $stmt->fetchColumn();
+            }
+
+            //print_r($formData); exit;
+
+            $sqlUpdate = "UPDATE $this->table 
+            SET title = :title, description = :description, image = :image, updated_at = NOW() 
+            WHERE id = :id";
+            $stmt = $this->connection->prepare($sqlUpdate);
+
+            try
+            {
+                $stmt->execute(
+                    [
+                        'title' => $formData->postTitle,
+                        'description' => $formData->postContent,
+                        'image' => $formData->postFile,
+                        'id' => $postId
+                    ]
+                );
+                return true;
+            } catch (PDOException $e) 
+            {
+                echo "Erro ao atualizar post";
+                echo "Error: " . $e->getMessage();
+                return false;
+            }
+            
+            
+        }
+
+        function delete($postId)
+        {
+            $sqlDelete = "DELETE FROM $this->table WHERE id = :id";
+            $stmt = $this->connection->prepare($sqlDelete);
+            try{
+                $stmt->execute(["id"=> $postId]);
+            }
+            catch (PDOException $e)
+            {
+                echo "Erro ao deletar post, consulte o administrador do sistema";
+                echo "Error: ". $e->getMessage();
+            }
         }
 
 
