@@ -22,16 +22,12 @@ $(document).ready(function() {
 
         if (postTitle === '' || postContent === '') {
             $('#btnSubmit').prop('disabled', true);
+            $('#btnSubmit').addClass('btn-secondary');
         }
     });
 
     // Requisição ajax do formulário de post
     $('#post-form').on('submit', function(e) {
-
-        var messages = {
-            'success': 'Post inserido com sucesso!',
-            'csrf_failure': 'Ação inválida!'
-        }
 
         // Previne o comportamento padrão do formulário
         e.preventDefault();
@@ -58,12 +54,9 @@ $(document).ready(function() {
                     $('#postContent').val('');
                     $('#postFile').val('');
 
-                    Swal.fire(messages['success']);
-
                 } else {
                     Swal.fire(messages['csrf_failure']);
                 }
-                
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.error(textStatus, errorThrown);

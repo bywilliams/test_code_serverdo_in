@@ -118,8 +118,6 @@
                 $formData->postFile = $stmt->fetchColumn();
             }
 
-            //print_r($formData); exit;
-
             $sqlUpdate = "UPDATE $this->table 
             SET title = :title, description = :description, image = :image, updated_at = NOW() 
             WHERE id = :id";

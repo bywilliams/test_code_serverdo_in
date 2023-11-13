@@ -110,7 +110,7 @@ trait PostTrait
             $imageHtml = '<img src="assets/imgs/posts/'.$post->image.'" class="card-img-top" alt="Imagem do Post 1">';
         }
 
-        return '<h5 class="text-info text-center">Novo Post</h5>
+        return '<h3 class="text-info text-center">Novo Post</h3>
             <div class="card border border-0 mb-3">
             <div class="card-header bg-dark text-white">
                 <img src="https://via.placeholder.com/40" class="rounded-circle" alt="Imagem de Perfil">
@@ -124,8 +124,6 @@ trait PostTrait
             '.$imageHtml.'
             <div class="card-footer" id="card-footer_'.$post->id.'" style="display: none;">
                 <button class="btn btn-primary" id="show-comments-button_' . $post->id . '"><i class="fas fa-comments"></i> Comentários</button>
-                <button class="btn btn-warning"><i class="fas fa-edit"></i> Editar</button>
-                <button class="btn btn-danger"><i class="fas fa-trash-alt"></i> Excluir</button>
             </div>
             <div class="comments" id="comments_'.$post->id.'" style="display: none;">
                 <div class="card border-bottom border-top border-start-0 border-end-0 mt-3">

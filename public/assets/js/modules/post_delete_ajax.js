@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     // Pega cada form edit
-    $('form[id^="post-form-edit-"]').each(function() {
+    $('form[id^="post-form-delete-"]').each(function() {
 
         var form = $(this); // formulário atual no loop
         
@@ -23,21 +23,20 @@ $(document).ready(function() {
 
             $.ajax({
                 url: url, // URL do endpoint que irá processar a requisição
-                method: 'POST',
+                method: 'post',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function(response) {
 
-                    postHtml = response.body;
+                    var postHtml = response.post;
 
-                    //console.log(response);
+                    console.log(postHtml);
 
                     if (postHtml == 'csrf_failure') {
                         Swal.fire('Ação inválida');
-                    } else {
-                        location.reload();
-                    }
+                    } 
+
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     //console.error(textStatus, errorThrown);

@@ -22,7 +22,7 @@
                             <input type="text" class="form-control" id="postTitle" name="postTitle">
                         </div>
                         <div class="mb-3">
-                            <label for="postContent" class="form-label">Conteúdo do Post</label>
+                            <label for="postContent" class="form-label">Descrição do Post</label>
                             <textarea class="form-control" id="postContent" name="postContent" rows="4"></textarea>
                         </div>
                         <div class="mb-3">
@@ -101,7 +101,7 @@
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="post-form-edit-<?= $post->id ?>" enctype="multipart/form-data">
+                                <form id="post-form-edit-" enctype="multipart/form-data">
                                     <input type="hidden" name="id" value="<?= $post->id ?>">
                                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                     <div class="mb-3">
@@ -148,8 +148,9 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                                <form action="post-delete/<?= $post->id ?>" method="post">
+                                <form id="post-form-delete-" method="post">
                                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                    <input type="hidden" name="id" value="<?= $post->id ?>">
                                     <button type="submit" class="btn btn-primary">Sim</button>
                                 </form>
                             </div>

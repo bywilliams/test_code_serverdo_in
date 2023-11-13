@@ -149,13 +149,15 @@ class PostController
         // verifica se o form possui CSRF Token e se não está vazio
         if (!$this->validateCsrfToken($data)) {
             return $response->withJson(['post' => 'csrf_failure']);
+        } else {
+
+            $id = $args['id'];
+    
+            $this->model->delete($id);
+    
+            return $response;
         }
 
-        $id = $args['id'];
-
-        $this->model->delete($id);
-
-        return $response->withRedirect('/dashboard');
 
     }
 }
